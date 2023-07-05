@@ -36,7 +36,7 @@ function App() {
   };
 
   return (
-    <div className="App" style={{ color: "#fff" }}>
+    <div className="App">
       <Router>
         <Header />
         <Routes>
@@ -46,7 +46,7 @@ function App() {
           <Route path="/explore/:mediaType" element={<Explore />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
-        {/* <Footer /> */}
+        <Footer />
       </Router>
     </div>
   );
