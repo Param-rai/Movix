@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { fetchDataFromApi } from "./utils/api";
 import { useSelector, useDispatch } from "react-redux";
-import { getApiConfig } from "./store/homeSlice";
+import { getApiConfig, getGenres } from "./store/homeSlice";
 
 import Header from "./components/header/Header";
 import Footer from "./components/footer/Footer";
@@ -19,12 +19,11 @@ function App() {
 
   useEffect(() => {
     apiTesting();
+    genresCall();
   }, []);
 
   const apiTesting = () => {
     fetchDataFromApi("/configuration").then((res) => {
-      console.log(res);
-
       const url = {
         backdrop: res.images.secure_base_url + "original",
         poster: res.images.secure_base_url + "original",
@@ -33,6 +32,23 @@ function App() {
 
       dispatch(getApiConfig(url));
     });
+  };
+
+  const genresCall = async () => {
+    let promises = [];
+    let endpoints = ["tv", "movie"];
+    let allGenres = {};
+
+    endpoints.forEach((url) => {
+      return promises.push(fetchDataFromApi(`/genre/${url}/list`));
+    });
+
+    const data = await Promise.all(promises);
+    data.map(({ genres }) => {
+      return genres.map((item) => (allGenres[item.id] = item));
+    });
+
+    dispatch(getGenres(allGenres));
   };
 
   return (
